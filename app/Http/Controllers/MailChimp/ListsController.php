@@ -111,6 +111,28 @@ class ListsController extends Controller
         /** @var \App\Database\Entities\MailChimp\MailChimpList|null $list */
         $list = $this->entityManager->getRepository(MailChimpList::class)->find($listId);
 
+        // See if list exists on server.
+        if ($list === null && $results = $this->mailChimp->get("lists/$listId")) {
+
+            $data = $results->toArray();
+            $data['contact'] = (array) $data['contact'];
+            $data['campaign_defaults'] = (array) $data['campaign_defaults'];
+
+            $list = new MailChimpList($data);
+            $validator = $this->getValidationFactory()->make($list->toMailChimpArray(), $list->getValidationRules());
+
+            if ($validator->fails()) {
+                // Return error response if validation failed
+                return $this->errorResponse([
+                    'message' => 'Invalid data given',
+                    'errors' => $validator->errors()->toArray()
+                ]);
+            }
+
+            $this->entityManager->persist($list);
+            $this->entityManager->flush();
+        }
+
         if ($list === null) {
             return $this->errorResponse(
                 ['message' => \sprintf('MailChimpList[%s] not found', $listId)],
