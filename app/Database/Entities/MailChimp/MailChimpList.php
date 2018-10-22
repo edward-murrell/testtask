@@ -121,7 +121,7 @@ class MailChimpList extends MailChimpEntity
             'campaign_defaults' => 'required|array',
             'campaign_defaults.from_name' => 'required|string',
             'campaign_defaults.from_email' => 'required|string',
-            'campaign_defaults.subject' => 'required|string',
+            'campaign_defaults.subject' => 'nullable|string',
             'campaign_defaults.language' => 'required|string',
             'contact' => 'required|array',
             'contact.company' => 'required|string',
