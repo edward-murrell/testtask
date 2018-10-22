@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\App\Functional\Http\Controllers\MailChimp;
 
+use Mailchimp\Mailchimp;
 use Tests\App\TestCases\MailChimp\ListTestCase;
 
 class ListsControllerTest extends ListTestCase
@@ -101,6 +102,28 @@ class ListsControllerTest extends ListTestCase
         $list = $this->createList(static::$listData);
 
         $this->get(\sprintf('/mailchimp/lists/%s', $list->getId()));
+        $content = \json_decode($this->response->content(), true);
+
+        $this->assertResponseOk();
+
+        foreach (static::$listData as $key => $value) {
+            self::assertArrayHasKey($key, $content);
+            self::assertEquals($value, $content[$key]);
+        }
+    }
+
+    /**
+     * Test application returns successful response with list data when requesting existing list.
+     *
+     * @return void
+     */
+    public function testShowListSuccessfullyForNewList(): void
+    {
+        $mailChimp = $this->app->make(Mailchimp::class);
+        $listId = $mailChimp->post('lists', static::$listData)->get('id');
+        $this->createdListIds[] = $listId; // Store MailChimp list id for cleaning purposes
+
+        $this->get(\sprintf('/mailchimp/lists/%s', $listId));
         $content = \json_decode($this->response->content(), true);
 
         $this->assertResponseOk();
