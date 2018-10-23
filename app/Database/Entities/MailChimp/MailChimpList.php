@@ -101,6 +101,39 @@ class MailChimpList extends MailChimpEntity
     }
 
     /**
+     * Set ID.
+     *
+     * @param string $id
+     *   Set the ID for this List. This should match the 'list_id' property
+     *   provided by MailChimp.
+     *
+     * @return MailchimpList
+     */
+    public function setId($id): MailChimpList
+    {
+        $this->listId = $id;
+
+        return $this;
+    }
+
+    /**
+     * Alias of Set ID.
+     *
+     * This method is provided to ensure a clean implementation of the fill()
+     *  method.
+     *
+     * @param string $id
+     *   Set the ID for this List. This should match the 'list_id' property
+     *   provided by MailChimp.
+     *
+     * @return MailchimpList
+     */
+    public function setListId($id): MailChimpList
+    {
+        return $this->setId($id);
+    }
+
+    /**
      * Get mailchimp id of the list.
      *
      * @return null|string
