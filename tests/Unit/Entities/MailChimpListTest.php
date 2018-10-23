@@ -22,4 +22,22 @@ class MailChimpListTest extends ListTestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * Test that creating a MailChimpList entity that has an entity_id in it's
+     *  JSON sets list_id value as the ID.
+     */
+    public function testGetId()
+    {
+        $expected = 'aabb1133cc22';
+
+        $source_data = static::$listData;
+        $source_data['list_id'] = 'aabb1133cc22';
+
+        $list = new MailChimpList($source_data);
+        $actual = $list->getId();
+
+        $this->assertEquals($expected, $actual);
+    }
+
 }
