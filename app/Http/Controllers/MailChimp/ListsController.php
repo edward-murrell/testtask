@@ -112,12 +112,15 @@ class ListsController extends Controller
         $list = $this->entityManager->getRepository(MailChimpList::class)->find($listId);
 
         if ($list === null) {
-            list($list, $error) = $this->getListFromMailChimp($listId);
-
-            if ($error) {
-                return $error;
+            $response = $this->getListFromMailChimp($listId);
+            if ($response instanceof JsonResponse)
+            {
+                return $response;
             }
-            $this->saveEntity($list);
+            else {
+                $list = $response;
+                $this->saveEntity($list);
+            }
         }
 
         return $this->successfulResponse($list->toArray());
@@ -175,23 +178,19 @@ class ListsController extends Controller
      * @param string $listId
      *   MailChimp list_id property.
      *
-     * @return array[
-     *      \App\Database\Entities\MailChimp\MailChimpList
-     *      Illuminate\Http\JsonResponse
+     * @return MailChimpList|JsonResponse
      *  ]
      */
-    private function getListFromMailChimp(string $listId): array
+    private function getListFromMailChimp(string $listId)
     {
         try {
             $results = $this->mailChimp->get("lists/$listId");
         }
         catch (\Exception $e) {
-            return [
-                    null,
-                    $this->errorResponse(
-                        ['message' => \sprintf('MailChimpList[%s] not found', $listId)],
-                        404)
-                ];
+            return $this->errorResponse(
+                ['message' => \sprintf('MailChimpList[%s] not found', $listId)],
+                404
+            );
         }
         $data = $results->toArray();
         $data['contact'] = (array) $data['contact'];
@@ -201,18 +200,13 @@ class ListsController extends Controller
         $validator = $this->getValidationFactory()->make($list->toMailChimpArray(), $list->getValidationRules());
         if ($validator->fails()) {
             // Return error response if validation failed
-                return [
-                    null,
-                    $this->errorResponse([
-                        'message' => 'Invalid data given',
-                        'errors' => $validator->errors()->toArray()
-                    ])
-                ];
+            return $this->errorResponse(
+                [
+                    'message' => 'Invalid data given',
+                    'errors' => $validator->errors()->toArray()
+                ]);
         }
 
-        return [
-            $list,
-            null
-        ];
+        return $list;
     }
 }
