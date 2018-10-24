@@ -42,15 +42,10 @@ class ListsController extends Controller
     {
         // Instantiate entity
         $list = new MailChimpList($request->all());
-        // Validate entity
-        $validator = $this->getValidationFactory()->make($list->toMailChimpArray(), $list->getValidationRules());
 
-        if ($validator->fails()) {
-            // Return error response if validation failed
-            return $this->errorResponse([
-                'message' => 'Invalid data given',
-                'errors' => $validator->errors()->toArray()
-            ]);
+        $error = $this->validateList($list);
+        if ($error instanceof JsonResponse) {
+            return $error;
         }
 
         try {
@@ -149,15 +144,9 @@ class ListsController extends Controller
         // Update list properties
         $list->fill($request->all());
 
-        // Validate entity
-        $validator = $this->getValidationFactory()->make($list->toMailChimpArray(), $list->getValidationRules());
-
-        if ($validator->fails()) {
-            // Return error response if validation failed
-            return $this->errorResponse([
-                'message' => 'Invalid data given',
-                'errors' => $validator->errors()->toArray()
-            ]);
+        $error = $this->validateList($list);
+        if ($error instanceof JsonResponse) {
+            return $error;
         }
 
         try {
@@ -197,7 +186,25 @@ class ListsController extends Controller
         $data['campaign_defaults'] = (array) $data['campaign_defaults'];
         $list = new MailChimpList($data);
 
-        $validator = $this->getValidationFactory()->make($list->toMailChimpArray(), $list->getValidationRules());
+        $error = $this->validateList($list);
+        if ($error instanceof JsonResponse) {
+            return $error;
+        }
+
+        return $list;
+    }
+
+    /**
+     * Validate the list, returns JSON message error if invalid.
+     *
+     * @param $list
+     *
+     * @return \Illuminate\Http\JsonResponse|null
+     */
+    private function validateList($list)
+    {
+        $validator = $this->getValidationFactory()
+            ->make($list->toMailChimpArray(), $list->getValidationRules());
         if ($validator->fails()) {
             // Return error response if validation failed
             return $this->errorResponse(
@@ -205,8 +212,8 @@ class ListsController extends Controller
                     'message' => 'Invalid data given',
                     'errors' => $validator->errors()->toArray()
                 ]);
+        } else {
+            return null;
         }
-
-        return $list;
     }
 }
