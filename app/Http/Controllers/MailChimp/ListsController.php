@@ -43,8 +43,7 @@ class ListsController extends Controller
         // Instantiate entity
         $list = new MailChimpList($request->all());
 
-        $error = $this->validateList($list);
-        if ($error instanceof JsonResponse) {
+        if (($error = $this->validateList($list)) instanceof JsonResponse) {
             return $error;
         }
 
@@ -138,8 +137,7 @@ class ListsController extends Controller
         // Update list properties
         $list->fill($request->all());
 
-        $error = $this->validateList($list);
-        if ($error instanceof JsonResponse) {
+        if (($error = $this->validateList($list)) instanceof JsonResponse) {
             return $error;
         }
 
@@ -178,8 +176,7 @@ class ListsController extends Controller
         $data['campaign_defaults'] = (array) $data['campaign_defaults'];
         $list = new MailChimpList($data);
 
-        $error = $this->validateList($list);
-        if ($error instanceof JsonResponse) {
+        if (($error = $this->validateList($list)) instanceof JsonResponse) {
             return $error;
         }
 
