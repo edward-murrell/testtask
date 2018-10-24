@@ -76,10 +76,7 @@ class ListsController extends Controller
         $list = $this->entityManager->getRepository(MailChimpList::class)->find($listId);
 
         if ($list === null) {
-            return $this->errorResponse(
-                ['message' => \sprintf('MailChimpList[%s] not found', $listId)],
-                404
-            );
+            return $this->getNotFoundError($listId);
         }
 
         try {
@@ -135,10 +132,7 @@ class ListsController extends Controller
         $list = $this->entityManager->getRepository(MailChimpList::class)->find($listId);
 
         if ($list === null) {
-            return $this->errorResponse(
-                ['message' => \sprintf('MailChimpList[%s] not found', $listId)],
-                404
-            );
+            return $this->getNotFoundError($listId);
         }
 
         // Update list properties
@@ -176,11 +170,9 @@ class ListsController extends Controller
             $results = $this->mailChimp->get("lists/$listId");
         }
         catch (\Exception $e) {
-            return $this->errorResponse(
-                ['message' => \sprintf('MailChimpList[%s] not found', $listId)],
-                404
-            );
+            return $this->getNotFoundError($listId);
         }
+
         $data = $results->toArray();
         $data['contact'] = (array) $data['contact'];
         $data['campaign_defaults'] = (array) $data['campaign_defaults'];
@@ -215,5 +207,19 @@ class ListsController extends Controller
         } else {
             return null;
         }
+    }
+
+    /**
+     * Create common 404 not found error message.
+     *
+     * @param string $listId
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function getNotFoundError(string $listId): JsonResponse {
+        return $this->errorResponse(
+            ['message' => \sprintf('MailChimpList[%s] not found', $listId)],
+            404
+        );
     }
 }
