@@ -42,6 +42,37 @@ class MembersController extends Controller
         catch (\Exception $e) {
             return $this->errorResponse(['message' => "MailChimpList[{$list_id}] not found"]);
         }
+    }
 
+    public function remove(Request $request, $list_id, $member_id): JsonResponse
+    {
+        $member = new MailChimpMember($request->all());
+        try {
+            $this->mailChimp->delete("/lists/{$list_id}/members/{$member_id}");
+        }
+        catch (\Exception $e) {
+            return $this->errorResponse(['message' => "MailChimpList[{$list_id}] not found"]);
+        }
+    }
+
+    public function update(Request $request, $list_id, $member_id): JsonResponse
+    {
+        $member = new MailChimpMember($request->all());
+        try {
+            $this->mailChimp->patch("/lists/{$list_id}/members/{$member_id}");
+        }
+        catch (\Exception $e) {
+            return $this->errorResponse(['message' => "MailChimpList[{$list_id}] not found"]);
+        }
+    }
+
+    public function show(Request $request, $list_id, $member_id): JsonResponse
+    {
+        try {
+            $this->mailChimp->get("/lists/{$list_id}/members/{$member_id}");
+        }
+        catch (\Exception $e) {
+            return $this->errorResponse(['message' => "MailChimpList[{$list_id}] not found"]);
+        }
     }
 }
