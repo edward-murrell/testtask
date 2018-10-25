@@ -17,8 +17,8 @@ abstract class MemberTestCase extends ListTestCase
      * @var array
      */
     protected static $memberData = [
-            'id'               => '852aaa9532cb36adfb5e9fef7a4206a9',
-            'email_address'    => 'bob.smith+999@freddiesjokes.com',
+            'id'               => '5bf9d88a5ebb8e535975735cdd6eac1e',
+            'email_address'    => 'testname@example.com',
             'unique_email_id'  => 'fab20fa03d',
             'email_type'       => 'html',
             'status'           => 'subscribed',
