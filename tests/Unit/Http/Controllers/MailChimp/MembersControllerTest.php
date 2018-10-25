@@ -17,6 +17,7 @@ class MembersControllerTest extends MemberTestCase
         yield [
             'method' => 'create',
             'list_id' => 'x',
+            'member_id' => null,
             'data' => static::$memberData,
             'request_exception' => 'post',
             'expected_code' => 400,
@@ -25,6 +26,7 @@ class MembersControllerTest extends MemberTestCase
         yield [
             'method' => 'remove',
             'list_id' => 'x',
+            'member_id' => 'abc123',
             'data' => [],
             'request_exception' => 'delete',
             'expected_code' => 400,
@@ -33,14 +35,16 @@ class MembersControllerTest extends MemberTestCase
         yield [
             'method' => 'update',
             'list_id' => 'x',
+            'member_id' => 'abc123',
             'data' => static::$memberData,
-            'request_exception' => 'put',
+            'request_exception' => 'patch',
             'expected_code' => 400,
             'expected_content' => '{"message": "MailChimpList[x] not found"}',
         ];
         yield [
             'method' => 'show',
             'list_id' => 'x',
+            'member_id' => 'abc123',
             'data' => [],
             'request_exception' => 'get',
             'expected_code' => 400,
@@ -51,6 +55,7 @@ class MembersControllerTest extends MemberTestCase
     /**
      * @param $method
      * @param $list_id
+     * @param $member_id
      * @param $data
      * @param $request_exception
      * @param $expected_code
@@ -58,12 +63,17 @@ class MembersControllerTest extends MemberTestCase
      *
      * @dataProvider dataProviderForExceptions
      */
-    public function testErrors($method, $list_id, $data, $request_exception, $expected_code, $expected_content)
+    public function testErrors($method, $list_id, $member_id, $data, $request_exception, $expected_code, $expected_content)
     {
         $controller = new MembersController($this->entityManager, $this->mockMailChimpForException($request_exception));
         $request = new Request($data);
 
-        $response = $controller->$method($request, $list_id);
+        if ($member_id === null) {
+            $response = $controller->$method($request, $list_id);
+        }
+        else {
+            $response = $controller->$method($request, $list_id, $member_id);
+        }
         $actual_code = $response->getStatusCode();
         $actual_content = $response->content();
 
