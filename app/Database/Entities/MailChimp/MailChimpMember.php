@@ -128,11 +128,21 @@ class MailChimpMember extends MailChimpEntity
     private $memberRating;
 
     /**
+     * @ORM\Column(name="last_changed", type="string", nullable=true)
+     *
+     * @var string Star rating for this member, between 1 and 5.
+     *
+     * This field is set by MailChimp.
+     */
+    private $lastChanged;
+
+
+    /**
      * @ORM\Column(name="language", type="string", nullable=true)
      *
      * @var string If set/detected, the subscriber’s language.
      */
-    private $language; // str
+    private $language;
 
     /**
      * @ORM\Column(name="vip", type="boolean", nullable=true)
@@ -439,6 +449,25 @@ class MailChimpMember extends MailChimpEntity
     protected function setMemberRating(int $memberRating): MailChimpMember
     {
         $this->memberRating = $memberRating;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastChanged(): string
+    {
+        return $this->lastChanged;
+    }
+
+    /**
+     * @param string $lastChanged
+     *
+     * @return MailChimpMember
+     */
+    protected function setLastChanged(string $lastChanged): MailChimpMember
+    {
+        $this->lastChanged = $lastChanged;
         return $this;
     }
 
