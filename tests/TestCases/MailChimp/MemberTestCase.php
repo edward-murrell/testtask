@@ -4,9 +4,8 @@ declare(strict_types=1);
 namespace Tests\App\TestCases\MailChimp;
 
 use Mailchimp\Mailchimp;
-use Tests\App\TestCases\WithDatabaseTestCase;
 
-abstract class MemberTestCase extends WithDatabaseTestCase
+abstract class MemberTestCase extends ListTestCase
 {
     /**
      * @var array
