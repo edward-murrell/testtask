@@ -142,4 +142,18 @@ class MembersController extends Controller
             return null;
         }
     }
+
+    /**
+     * Create common 404 not found error message.
+     *
+     * @param string $listId
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function getNotFoundError(string $listId): JsonResponse {
+        return $this->errorResponse(
+            ['message' => \sprintf('MailChimpList[%s] not found', $listId)],
+            404
+        );
+    }
 }
