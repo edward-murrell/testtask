@@ -128,7 +128,7 @@ class MailChimpList extends MailChimpEntity
      *
      * @return MailchimpList
      */
-    public function setListId($id): MailChimpList
+    protected function setListId($id): MailChimpList
     {
         return $this->setId($id);
     }
