@@ -62,13 +62,15 @@ class MembersController extends Controller
 
     public function update(Request $request, $list_id, $member_id): JsonResponse
     {
-        $member = new MailChimpMember($request->all());
         try {
-            $this->mailChimp->patch("/lists/{$list_id}/members/{$member_id}");
+            $response = $this->mailChimp->patch("/lists/{$list_id}/members/{$member_id}");
         }
         catch (\Exception $e) {
             return $this->errorResponse(['message' => "MailChimpList[{$list_id}] not found"]);
         }
+        $data = $response->toArray();
+        $member = new MailChimpMember($data);
+        return $this->successfulResponse($member->toArray());
     }
 
     public function show(Request $request, $listId, $memberId): JsonResponse
@@ -109,9 +111,6 @@ class MembersController extends Controller
         }
 
         $data = $results->toArray();
-        $data['merge_fields'] = (array) $data['merge_fields'];
-        $data['stats'] = (array) $data['stats'];
-        $data['location'] = (array) $data['location'];
         $member = new MailChimpMember($data);
 
         if (($error = $this->validateMember($member)) instanceof JsonResponse) {
