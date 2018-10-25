@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\MailChimp;
 
 use App\Database\Entities\MailChimp\MailChimpList;
+use App\Database\Entities\MailChimp\MailChimpMember;
 use App\Http\Controllers\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -31,8 +32,16 @@ class MembersController extends Controller
         $this->mailChimp = $mailchimp;
     }
 
-    public function create(Request $request): JsonResponse
+    public function create(Request $request, $list_id): JsonResponse
     {
+        $member = new MailChimpMember($request->all());
+        try {
+            $this->mailChimp->post("/lists/{$list_id}/members",
+                $member->toMailChimpArray());
+        }
+        catch (\Exception $e) {
+            return $this->errorResponse(['message' => "MailChimpList[{$list_id}] not found"]);
+        }
 
     }
 }
