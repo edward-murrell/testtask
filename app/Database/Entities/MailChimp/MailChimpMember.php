@@ -549,7 +549,11 @@ class MailChimpMember extends MailChimpEntity
 
     public function getValidationRules(): array
     {
-        // TODO: Implement getValidationRules() method.
+        return [
+            'email_address' => 'required|string',
+            'email_type' => 'nullable|string|in:html,text',
+            'status' => 'nullable|string|in:subscribed,unsubscribed,cleaned,pending,transactional',
+        ];
     }
 
     /**
