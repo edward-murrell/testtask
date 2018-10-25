@@ -57,13 +57,13 @@ class MemberControllerTest extends MemberTestCase
         $list = \json_decode($this->response->content(), true);
         $listId = $list['mail_chimp_id'];
         $this->createdListIds[] = $listId;
+
         $memberData = $this->getDataToSend();
         $this->post("/mailchimp/lists/{$listId}/member", $memberData);
         $memberId = md5($memberData['email_address']);
 
         $memberData['merge_fields'] = ['FNAME' => 'Bob', 'LNAME' => 'Smith'];
         $this->put("/mailchimp/lists/{$listId}/member/{$memberId}");
-        $content = \json_decode($this->response->content(), true);
 
         $this->assertResponseOk();
         $data = $this->get("/mailchimp/lists/{$listId}/member/{$memberId}");
