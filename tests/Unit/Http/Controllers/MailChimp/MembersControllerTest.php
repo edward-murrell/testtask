@@ -22,6 +22,30 @@ class MembersControllerTest extends MemberTestCase
             'expected_code' => 400,
             'expected_content' => '{"message": "MailChimpList[x] not found"}',
         ];
+        yield [
+            'method' => 'remove',
+            'list_id' => 'x',
+            'data' => [],
+            'request_exception' => 'delete',
+            'expected_code' => 400,
+            'expected_content' => '{"message": "MailChimpList[x] not found"}',
+        ];
+        yield [
+            'method' => 'update',
+            'list_id' => 'x',
+            'data' => static::$memberData,
+            'request_exception' => 'put',
+            'expected_code' => 400,
+            'expected_content' => '{"message": "MailChimpList[x] not found"}',
+        ];
+        yield [
+            'method' => 'show',
+            'list_id' => 'x',
+            'data' => [],
+            'request_exception' => 'get',
+            'expected_code' => 400,
+            'expected_content' => '{"message": "MailChimpList[x] not found"}',
+        ];
     }
 
     /**
