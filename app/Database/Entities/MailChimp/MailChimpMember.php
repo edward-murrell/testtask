@@ -96,6 +96,13 @@ class MailChimpMember extends MailChimpEntity
     private $ipSignup;
 
     /**
+     * @ORM\Column(name="timestamp_signup", type="string", nullable=true)
+     *
+     * @var string IP Address of client.
+     */
+    private $timestampSignup;
+
+    /**
      * @ORM\Column(name="ip_opt", type="string", nullable=true)
      *
      * @var string The IP address the subscriber used to confirm their opt-in status.
@@ -109,12 +116,12 @@ class MailChimpMember extends MailChimpEntity
      *
      * Timestamp must be in ISO 8601 format. (YYYY-MM-DD hh:mm:ss)
      */
-    private $timeStampOpt;
+    private $timestampOpt;
 
     /**
      * @ORM\Column(name="member_rating", type="integer", nullable=true)
      *
-     * @var string Star rating for this member, between 1 and 5.
+     * @var int Star rating for this member, between 1 and 5.
      *
      * This field is set by MailChimp.
      */
@@ -130,9 +137,9 @@ class MailChimpMember extends MailChimpEntity
     /**
      * @ORM\Column(name="vip", type="boolean", nullable=true)
      *
-     * @var string If set/detected, the subscriber’s language.
+     * @var boolean If set/detected, the subscriber’s language.
      */
-    private $vip; // bool
+    private $vip;
 
     /**
      * @ORM\Column(name="email_client", type="string", nullable=true)
@@ -149,6 +156,367 @@ class MailChimpMember extends MailChimpEntity
      * @var array Subscriber location information.
      */
     private $location;
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return MailChimpMember
+     */
+    protected function setId(string $id): MailChimpMember
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getListId()
+    {
+        return $this->listId;
+    }
+
+    /**
+     * @param mixed $listId
+     *
+     * @return MailChimpMember
+     */
+    public function setListId($listId)
+    {
+        $this->listId = $listId;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmailAddress(): string
+    {
+        return $this->emailAddress;
+    }
+
+    /**
+     * @param string $emailAddress
+     *
+     * @return MailChimpMember
+     */
+    public function setEmailAddress(string $emailAddress): MailChimpMember
+    {
+        $this->emailAddress = $emailAddress;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUniqueEmailId(): string
+    {
+        return $this->uniqueEmailId;
+    }
+
+    /**
+     * @param string $uniqueEmailId
+     *
+     * @return MailChimpMember
+     */
+    protected function setUniqueEmailId(string $uniqueEmailId): MailChimpMember
+    {
+        $this->uniqueEmailId = $uniqueEmailId;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmailType(): string
+    {
+        return $this->emailType;
+    }
+
+    /**
+     * @param string $emailType
+     *
+     * @return MailChimpMember
+     */
+    public function setEmailType(string $emailType): MailChimpMember
+    {
+        $this->emailType = $emailType;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     *
+     * @return MailChimpMember
+     */
+    protected function setStatus(string $status): MailChimpMember
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusIfNew(): string
+    {
+        return $this->statusIfNew;
+    }
+
+    /**
+     * @param string $statusIfNew
+     *
+     * @return MailChimpMember
+     */
+    public function setStatusIfNew(string $statusIfNew): MailChimpMember
+    {
+        $this->statusIfNew = $statusIfNew;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMergeFields(): array
+    {
+        return $this->mergeFields;
+    }
+
+    /**
+     * @param array $mergeFields
+     *
+     * @return MailChimpMember
+     */
+    public function setMergeFields(array $mergeFields): MailChimpMember
+    {
+        $this->mergeFields = $mergeFields;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getInterests(): array
+    {
+        return $this->interests;
+    }
+
+    /**
+     * @param array $interests
+     *
+     * @return MailChimpMember
+     */
+    public function setInterests(array $interests): MailChimpMember
+    {
+        $this->interests = $interests;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getStats(): array
+    {
+        return $this->stats;
+    }
+
+    /**
+     * @param array $stats
+     *
+     * @return MailChimpMember
+     */
+    public function setStats(array $stats): MailChimpMember
+    {
+        $this->stats = $stats;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIpSignup(): string
+    {
+        return $this->ipSignup;
+    }
+
+    /**
+     * @param string $ipSignup
+     *
+     * @return MailChimpMember
+     */
+    protected function setIpSignup(string $ipSignup): MailChimpMember
+    {
+        $this->ipSignup = $ipSignup;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTimestampSignup(): string
+    {
+        return $this->timestampSignup;
+    }
+
+    /**
+     * @param string $timestampSignup
+     *
+     * @return MailChimpMember
+     */
+    public function setTimestampSignup(string $timestampSignup): MailChimpMember
+    {
+        $this->timestampSignup = $timestampSignup;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIpOpt(): string
+    {
+        return $this->ipOpt;
+    }
+
+    /**
+     * @param string $ipOpt
+     *
+     * @return MailChimpMember
+     */
+    protected function setIpOpt(string $ipOpt): MailChimpMember
+    {
+        $this->ipOpt = $ipOpt;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTimestampOpt(): string
+    {
+        return $this->timestampOpt;
+    }
+
+    /**
+     * @param string $timestampOpt
+     *
+     * @return MailChimpMember
+     */
+    protected function setTimestampOpt(string $timestampOpt): MailChimpMember
+    {
+        $this->timestampOpt = $timestampOpt;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMemberRating(): int
+    {
+        return $this->memberRating;
+    }
+
+    /**
+     * @param stintring $memberRating
+     *
+     * @return MailChimpMember
+     */
+    protected function setMemberRating(int $memberRating): MailChimpMember
+    {
+        $this->memberRating = $memberRating;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    /**
+     * @param string $language
+     *
+     * @return MailChimpMember
+     */
+    public function setLanguage(string $language): MailChimpMember
+    {
+        $this->language = $language;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getVip():? bool
+    {
+        return $this->vip;
+    }
+
+    /**
+     * @param bool $vip
+     *
+     * @return MailChimpMember
+     */
+    public function setVip(bool $vip = null): MailChimpMember
+    {
+        $this->vip = $vip;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmailClient(): string
+    {
+        return $this->emailClient;
+    }
+
+    /**
+     * @param string $emailClient
+     *
+     * @return MailChimpMember
+     */
+    protected function setEmailClient(string $emailClient): MailChimpMember
+    {
+        $this->emailClient = $emailClient;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLocation(): array
+    {
+        return $this->location;
+    }
+
+    /**
+     * @param array $location
+     *
+     * @return MailChimpMember
+     */
+    public function setLocation(array $location): MailChimpMember
+    {
+        $this->location = $location;
+        return $this;
+    }
 
     public function getValidationRules(): array
     {
