@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\App\TestCases\MailChimp;
 
+use App\Database\Entities\MailChimp\MailChimpMember;
 use Mailchimp\Mailchimp;
 
 abstract class MemberTestCase extends ListTestCase
@@ -68,5 +69,22 @@ abstract class MemberTestCase extends ListTestCase
         $mailChimp = $this->app->make(Mailchimp::class);
 
         parent::tearDown();
+    }
+
+    /**
+     * Create MailChimp list into database.
+     *
+     * @param array $data
+     *
+     * @return \App\Database\Entities\MailChimp\MailChimpList
+     */
+    protected function createMember(array $data): MailChimpMember
+    {
+        $list = new MailChimpMember($data);
+
+        $this->entityManager->persist($list);
+        $this->entityManager->flush();
+
+        return $list;
     }
 }
