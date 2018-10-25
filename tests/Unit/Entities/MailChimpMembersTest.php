@@ -22,4 +22,39 @@ class MailChimpMembersTest extends MemberTestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * Test happy path for validation.
+     */
+    public function testValidationRulesCleanlyPass()
+    {
+        $source_data = static::$listData;
+
+        $member = new MailChimpMember($source_data);
+        $validator = app('validator')->make($member->toMailChimpArray(), $member->getValidationRules());
+
+        $this->assertFalse($validator->fails());
+    }
+
+    /**
+     * Test Members returns appropriate number of errors.
+     */
+    public function testValidationRulesFailWithEmpty()
+    {
+        $expected_error_keys = [
+            'email_address',
+            'email_type',
+            'status',
+        ];
+        $source_data = [
+            'email_type' => 'not_a_valid_type',
+            'status' => 'not_a_valid_status',
+        ];
+
+        $list = new MailChimpMember($source_data);
+        $validator = app('validator')->make($list->toMailChimpArray(), $list->getValidationRules());
+
+        $this->assertTrue($validator->fails());
+        $this->assertEquals($expected_error_keys, array_keys($validator->errors()->toArray()));
+    }
 }
