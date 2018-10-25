@@ -42,15 +42,9 @@ class ListsController extends Controller
     {
         // Instantiate entity
         $list = new MailChimpList($request->all());
-        // Validate entity
-        $validator = $this->getValidationFactory()->make($list->toMailChimpArray(), $list->getValidationRules());
 
-        if ($validator->fails()) {
-            // Return error response if validation failed
-            return $this->errorResponse([
-                'message' => 'Invalid data given',
-                'errors' => $validator->errors()->toArray()
-            ]);
+        if (($error = $this->validateList($list)) instanceof JsonResponse) {
+            return $error;
         }
 
         try {
@@ -81,10 +75,7 @@ class ListsController extends Controller
         $list = $this->entityManager->getRepository(MailChimpList::class)->find($listId);
 
         if ($list === null) {
-            return $this->errorResponse(
-                ['message' => \sprintf('MailChimpList[%s] not found', $listId)],
-                404
-            );
+            return $this->getNotFoundError($listId);
         }
 
         try {
@@ -112,10 +103,15 @@ class ListsController extends Controller
         $list = $this->entityManager->getRepository(MailChimpList::class)->find($listId);
 
         if ($list === null) {
-            return $this->errorResponse(
-                ['message' => \sprintf('MailChimpList[%s] not found', $listId)],
-                404
-            );
+            $response = $this->getListFromMailChimp($listId);
+            if ($response instanceof JsonResponse)
+            {
+                return $response;
+            }
+            else {
+                $list = $response;
+                $this->saveEntity($list);
+            }
         }
 
         return $this->successfulResponse($list->toArray());
@@ -135,24 +131,14 @@ class ListsController extends Controller
         $list = $this->entityManager->getRepository(MailChimpList::class)->find($listId);
 
         if ($list === null) {
-            return $this->errorResponse(
-                ['message' => \sprintf('MailChimpList[%s] not found', $listId)],
-                404
-            );
+            return $this->getNotFoundError($listId);
         }
 
         // Update list properties
         $list->fill($request->all());
 
-        // Validate entity
-        $validator = $this->getValidationFactory()->make($list->toMailChimpArray(), $list->getValidationRules());
-
-        if ($validator->fails()) {
-            // Return error response if validation failed
-            return $this->errorResponse([
-                'message' => 'Invalid data given',
-                'errors' => $validator->errors()->toArray()
-            ]);
+        if (($error = $this->validateList($list)) instanceof JsonResponse) {
+            return $error;
         }
 
         try {
@@ -165,5 +151,72 @@ class ListsController extends Controller
         }
 
         return $this->successfulResponse($list->toArray());
+    }
+
+    /**
+     * Retrieve a list from MailChimp and validate it.
+     *
+     * @param string $listId
+     *   MailChimp list_id property.
+     *
+     * @return MailChimpList|JsonResponse
+     *  ]
+     */
+    private function getListFromMailChimp(string $listId)
+    {
+        try {
+            $results = $this->mailChimp->get("lists/$listId");
+        }
+        catch (\Exception $e) {
+            return $this->getNotFoundError($listId);
+        }
+
+        $data = $results->toArray();
+        $data['contact'] = (array) $data['contact'];
+        $data['campaign_defaults'] = (array) $data['campaign_defaults'];
+        $list = new MailChimpList($data);
+
+        if (($error = $this->validateList($list)) instanceof JsonResponse) {
+            return $error;
+        }
+
+        return $list;
+    }
+
+    /**
+     * Validate the list, returns JSON message error if invalid.
+     *
+     * @param $list
+     *
+     * @return \Illuminate\Http\JsonResponse|null
+     */
+    private function validateList($list)
+    {
+        $validator = $this->getValidationFactory()
+            ->make($list->toMailChimpArray(), $list->getValidationRules());
+        if ($validator->fails()) {
+            // Return error response if validation failed
+            return $this->errorResponse(
+                [
+                    'message' => 'Invalid data given',
+                    'errors' => $validator->errors()->toArray()
+                ]);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Create common 404 not found error message.
+     *
+     * @param string $listId
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function getNotFoundError(string $listId): JsonResponse {
+        return $this->errorResponse(
+            ['message' => \sprintf('MailChimpList[%s] not found', $listId)],
+            404
+        );
     }
 }
