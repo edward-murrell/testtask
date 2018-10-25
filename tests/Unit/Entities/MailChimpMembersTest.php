@@ -47,6 +47,7 @@ class MailChimpMembersTest extends MemberTestCase
             'status',
         ];
         $source_data = [
+            'email_address' => 'invalid_email_address',
             'email_type' => 'not_a_valid_type',
             'status' => 'not_a_valid_status',
         ];
