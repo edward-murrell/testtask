@@ -44,7 +44,7 @@ class MembersController extends Controller
                 $member->toMailChimpArray());
         }
         catch (\Exception $e) {
-            return $this->errorResponse(['message' => "MailChimpList[{$list_id}] not found"]);
+            return $this->errorResponse(['message' => "MailChimpList[{$list_id}] not found"], 404);
         }
         return $this->successfulResponse($member->toArray());
     }
@@ -55,7 +55,7 @@ class MembersController extends Controller
             $this->mailChimp->delete("/lists/{$list_id}/members/{$member_id}");
         }
         catch (\Exception $e) {
-            return $this->errorResponse(['message' => "MailChimpList[{$list_id}] not found"]);
+            return $this->errorResponse(['message' => "MailChimpList[{$list_id}] not found"], 404);
         }
         return $this->successfulResponse([]);
     }
@@ -66,7 +66,7 @@ class MembersController extends Controller
             $response = $this->mailChimp->patch("/lists/{$list_id}/members/{$member_id}");
         }
         catch (\Exception $e) {
-            return $this->errorResponse(['message' => "MailChimpList[{$list_id}] not found"]);
+            return $this->errorResponse(['message' => "MailChimpList[{$list_id}] not found"], 404);
         }
         $data = $response->toArray();
         $member = new MailChimpMember($data);
