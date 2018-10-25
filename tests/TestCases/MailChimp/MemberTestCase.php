@@ -18,11 +18,11 @@ abstract class MemberTestCase extends ListTestCase
      */
     protected static $memberData = [
             'id'               => '5bf9d88a5ebb8e535975735cdd6eac1e',
-            'email_address'    => 'testname@example.com',
+            'email_address'    => 'edward@example.com',
             'unique_email_id'  => 'fab20fa03d',
             'email_type'       => 'html',
             'status'           => 'subscribed',
-            'status_if_new'    => '',
+            'status_if_new'    => 'unsubscribed',
             'merge_fields'     =>
                 [
                     'FNAME' => 'Robert',
