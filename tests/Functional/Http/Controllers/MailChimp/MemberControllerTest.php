@@ -66,7 +66,8 @@ class MemberControllerTest extends MemberTestCase
         $this->put("/mailchimp/lists/{$listId}/member/{$memberId}");
 
         $this->assertResponseOk();
-        $data = $this->get("/mailchimp/lists/{$listId}/member/{$memberId}");
+        $this->get("/mailchimp/lists/{$listId}/member/{$memberId}");
+        $data = \json_decode($data = $this->response->content(), true);
         $this->assertEquals("Bob", $data['merge_fields']['FNAME']);
         $this->assertEquals("Smith", $data['merge_fields']['LNAME']);
     }
