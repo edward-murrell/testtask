@@ -20,7 +20,7 @@ class MembersControllerTest extends MemberTestCase
             'member_id' => null,
             'data' => static::$memberData,
             'request_exception' => 'post',
-            'expected_code' => 400,
+            'expected_code' => 404,
             'expected_content' => '{"message": "MailChimpList[x] not found"}',
         ];
         yield [
@@ -29,7 +29,7 @@ class MembersControllerTest extends MemberTestCase
             'member_id' => 'abc123',
             'data' => [],
             'request_exception' => 'delete',
-            'expected_code' => 400,
+            'expected_code' => 404,
             'expected_content' => '{"message": "MailChimpList[x] not found"}',
         ];
         yield [
@@ -38,7 +38,7 @@ class MembersControllerTest extends MemberTestCase
             'member_id' => 'abc123',
             'data' => static::$memberData,
             'request_exception' => 'patch',
-            'expected_code' => 400,
+            'expected_code' => 404,
             'expected_content' => '{"message": "MailChimpList[x] not found"}',
         ];
         yield [
@@ -47,8 +47,8 @@ class MembersControllerTest extends MemberTestCase
             'member_id' => 'abc123',
             'data' => [],
             'request_exception' => 'get',
-            'expected_code' => 400,
-            'expected_content' => '{"message": "MailChimpList[x] not found"}',
+            'expected_code' => 404,
+            'expected_content' => '{"message": "MailChimpList[abc123] not found"}',
         ];
     }
 
