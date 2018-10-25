@@ -46,4 +46,29 @@ class MemberControllerTest extends MemberTestCase
         self::assertEmpty(\json_decode($this->response->content(), true));
     }
 
+    /**
+     * Test application returns successfully response when updating existing list with updated values.
+     *
+     * @return void
+     */
+    public function testUpdateListSuccessfully(): void
+    {
+        $this->post('/mailchimp/lists', static::$listData);
+        $list = \json_decode($this->response->content(), true);
+        $listId = $list['mail_chimp_id'];
+        $this->createdListIds[] = $listId;
+        $memberData = $this->getDataToSend();
+        $this->post("/mailchimp/lists/{$listId}/member", $memberData);
+        $memberId = md5($memberData['email_address']);
+
+        $memberData['merge_fields'] = ['FNAME' => 'Bob', 'LNAME' => 'Smith'];
+        $this->put("/mailchimp/lists/{$listId}/member/{$memberId}");
+        $content = \json_decode($this->response->content(), true);
+
+        $this->assertResponseOk();
+        $data = $this->get("/mailchimp/lists/{$listId}/member/{$memberId}");
+        $this->assertEquals("Bob", $data['merge_fields']['FNAME']);
+        $this->assertEquals("Smith", $data['merge_fields']['LNAME']);
+    }
+
 }
