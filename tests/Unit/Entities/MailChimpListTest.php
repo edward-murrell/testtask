@@ -40,4 +40,30 @@ class MailChimpListTest extends ListTestCase
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * Test happy path for validation.
+     */
+    public function testValidationRulesCleanlyPass()
+    {
+        $source_data = static::$listData;
+
+        $list = new MailChimpList($source_data);
+        $validator = app('validator')->make($list->toMailChimpArray(), $list->getValidationRules());
+
+        $this->assertFalse($validator->fails());
+    }
+
+    /**
+     * Test that an empty list fails validation.
+     */
+    public function testValidationRulesFailWithEmpty()
+    {
+        $source_data = [];
+
+        $list = new MailChimpList($source_data);
+        $validator = app('validator')->make($list->toMailChimpArray(), $list->getValidationRules());
+
+        $this->assertTrue($validator->fails());
+        $this->assertCount(14, $validator->errors()->toArray());
+    }
 }
