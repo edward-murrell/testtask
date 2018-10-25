@@ -551,8 +551,22 @@ class MailChimpMember extends MailChimpEntity
     {
         return [
             'email_address' => 'required|email',
+            'unique_email_id' => 'nullable|string',
             'email_type' => 'nullable|string|in:html,text',
             'status' => 'nullable|string|in:subscribed,unsubscribed,cleaned,pending,transactional',
+            'status_if_new' => 'nullable|string',
+            'merge_fields' => 'nullable|array',
+            'interests' => 'nullable|array',
+            'stats' => 'nullable|array',
+            'timestamp_signup' => 'nullable|string',
+            'ip_opt' => 'nullable|string',
+            'timestamp_opt' => 'nullable|string',
+            'member_rating' => 'nullable|integer',
+            'last_changed' => 'nullable|string',
+            'language' => 'nullable|string',
+            'vip' => 'nullable|boolean',
+            'email_client' => 'nullable|string',
+            'location' => 'nullable|array',
         ];
     }
 
