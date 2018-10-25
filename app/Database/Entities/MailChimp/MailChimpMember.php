@@ -577,10 +577,24 @@ class MailChimpMember extends MailChimpEntity
      */
     public function toArray(): array
     {
+        return $this->convertObjectToArray($this);
+    }
+
+    /**
+     * Recursive function for converting objects to arrays.
+     *
+     * @param $object
+     *
+     * @return array
+     */
+    private function convertObjectToArray($object) {
         $array = [];
         $str = new Str();
 
-        foreach (\get_object_vars($this) as $property => $value) {
+        foreach (\get_object_vars($object) as $property => $value) {
+            if ($value instanceof \stdClass) {
+                $value = $this->convertObjectToArray($value);
+            }
             $array[$str->snake($property)] = $value;
         }
 
