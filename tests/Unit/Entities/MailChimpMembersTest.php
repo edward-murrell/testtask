@@ -28,7 +28,7 @@ class MailChimpMembersTest extends MemberTestCase
      */
     public function testValidationRulesCleanlyPass()
     {
-        $source_data = static::$listData;
+        $source_data = static::$memberData;
 
         $member = new MailChimpMember($source_data);
         $validator = app('validator')->make($member->toMailChimpArray(), $member->getValidationRules());
