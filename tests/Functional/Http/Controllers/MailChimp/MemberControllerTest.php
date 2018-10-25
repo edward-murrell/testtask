@@ -62,8 +62,8 @@ class MemberControllerTest extends MemberTestCase
         $this->post("/mailchimp/lists/{$listId}/member", $memberData);
         $memberId = md5($memberData['email_address']);
 
-        $memberData['merge_fields'] = ['FNAME' => 'Bob', 'LNAME' => 'Smith'];
-        $this->put("/mailchimp/lists/{$listId}/member/{$memberId}");
+        $newData['merge_fields'] = ['FNAME' => 'Bob', 'LNAME' => 'Smith'];
+        $this->put("/mailchimp/lists/{$listId}/member/{$memberId}", $newData);
 
         $this->assertResponseOk();
         $this->get("/mailchimp/lists/{$listId}/member/{$memberId}");
