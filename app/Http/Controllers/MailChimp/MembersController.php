@@ -35,6 +35,10 @@ class MembersController extends Controller
     public function create(Request $request, $list_id): JsonResponse
     {
         $member = new MailChimpMember($request->all());
+        if (($error = $this->validateMember($member)) instanceof JsonResponse) {
+            return $error;
+        }
+
         try {
             $this->mailChimp->post("/lists/{$list_id}/members",
                 $member->toMailChimpArray());
@@ -42,17 +46,18 @@ class MembersController extends Controller
         catch (\Exception $e) {
             return $this->errorResponse(['message' => "MailChimpList[{$list_id}] not found"]);
         }
+        return $this->successfulResponse($member->toArray());
     }
 
     public function remove(Request $request, $list_id, $member_id): JsonResponse
     {
-        $member = new MailChimpMember($request->all());
         try {
             $this->mailChimp->delete("/lists/{$list_id}/members/{$member_id}");
         }
         catch (\Exception $e) {
             return $this->errorResponse(['message' => "MailChimpList[{$list_id}] not found"]);
         }
+        return $this->successfulResponse([]);
     }
 
     public function update(Request $request, $list_id, $member_id): JsonResponse

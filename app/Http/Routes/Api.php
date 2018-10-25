@@ -12,7 +12,7 @@ $router->group(['prefix' => 'mailchimp', 'namespace' => 'MailChimp'], function (
         $router->put('/{listId}', 'ListsController@update');
         $router->delete('/{listId}', 'ListsController@remove');
 
-        $router->post('/{listId}', 'MembersController@create');
+        $router->post('/{listId}/member', 'MembersController@create');
         $router->get('/{listId}/member/{memberId}', 'MembersController@show');
         $router->put('/{listId}/member/{memberId}', 'MembersController@update');
         $router->delete('/{listId}/member/{memberId}', 'MembersController@remove');
